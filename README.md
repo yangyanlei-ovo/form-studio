@@ -4,7 +4,7 @@ FORM 是一个面向室内空间的 AI 工作台：用体块搭建空间，锁�
 
 > 这是 **源码仓库**，不包含 2.6GB 的 SHARP 模型、PyTorch/SHARP 运行环境、DeepSeek Harness 运行时和任何 API Key。源码可直接阅读和二次开发；完整安装包、3DGS 模型与运行环境需要单独构建或安装。
 
-![03 3DGS 视角](docs/screenshots/19-3dgs-page.png)
+![03 3DGS 当前版本](docs/screenshots/preview-current-3dgs.png)
 
 ## 功能
 
@@ -13,6 +13,16 @@ FORM 是一个面向室内空间的 AI 工作台：用体块搭建空间，锁�
 - **03 3DGS**：Apple SHARP 单图生成 3DGS；旋转、Shift+左键平移、滚轮/＋－缩放；Flash 1K / Pro 2K 降噪。
 - **04 漫游**：四条预设路径，一键黑箱导出 1080p 30fps MP4（AI 关键帧 + 本地平滑编码）。
 - **模型与 API Key**：按模型逐行配置火山方舟、OpenRouter、DeepSeek Key；本地 SHARP 可直接打开模型目录。
+
+## 当前版本预览
+
+| 搭建空间 | 03 · 3DGS |
+|---|---|
+| <img src="docs/screenshots/preview-current-landing.png" width="560"> | <img src="docs/screenshots/preview-current-3dgs.png" width="560"> |
+
+| 04 · 漫游 | 模型与 API Key |
+|---|---|
+| <img src="docs/screenshots/preview-current-roam.png" width="560"> | <img src="docs/screenshots/preview-current-api.png" width="560"> |
 
 ## FORM v1（当前）
 
