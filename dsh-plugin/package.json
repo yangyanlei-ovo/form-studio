@@ -1,0 +1,20 @@
+{
+  "name": "dsh-form-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FORM v1 方构空间工作台 DSH 插件：托管 /form/ 页面，组件 Agent 使用真实 DSH Agent 会话，出图使用 Seedream（火山方舟 Ark 主通道、OpenRouter 备选）",
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  }
+}

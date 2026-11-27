@@ -1,0 +1,9 @@
+# FORM 方构空间工作台 bundle patch.
+# Mounts the host plugin that serves /form/ and its JSON API.
+- insert:
+    - id: form-studio
+      name: 'dsh-form-studio'
+      config:
+        webRoot: '<FORM_ROOT>'
+        secretsFile: '<FORM_ROOT>/.form-secrets.json'
+        seedreamModel: 'doubao-seedream-5-0-pro-260628'

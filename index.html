@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FORM v1 · 方构空间工作台</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="editor-v2.css"><link rel="stylesheet" href="gs-page.css?v=3dgs7"><link rel="stylesheet" href="night-ui.css?v=1"></head>
+<body>
+<svg class="icon-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="cube" viewBox="0 0 24 24"><path d="m12 3 9 5v8l-9 5-9-5V8Zm0 10 9-5M12 13 3 8m9 5v8M3 8l9-5"/></symbol>
+<symbol id="camera" viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="m14 5 7 7-7 7M21 12H3"/></symbol>
+<symbol id="spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4m-2-2h4"/></symbol>
+<symbol id="move" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18m-12-6 3-3 3 3m-6 12 3 3 3-3M6 9l-3 3 3 3m15-6 3 3-3 3"/></symbol>
+<symbol id="trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+<symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+<symbol id="icon-undo" viewBox="0 0 24 24"><path d="m8 3-5 5 5 5M3 8h10a7 7 0 0 1 0 14"/></symbol>
+<symbol id="grid" viewBox="0 0 24 24"><path d="M3 3h18v18H3ZM3 9h18M3 15h18M9 3v18m6-18v18"/></symbol>
+<symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5"/></symbol>
+<symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></symbol>
+</defs></svg>
+<header class="topbar"><a class="brand" href="#" id="brand"><span class="brand-mark"><svg><use href="#cube"/></svg></span>FORM<span class="brand-cn">方构</span></a><div class="header-divider"></div><div class="project"><span class="project-icon">▧</span><span>林间客厅</span><span class="project-tag">空间实验 001</span></div><div class="top-right"><span id="saveStatus" class="saved"><i></i> 已在本地保存</span><span class="demo-badge">FORM v1</span><button id="resetProject" class="button subtle" title="清空所有内容并恢复空场地"><svg><use href="#trash"/></svg>清空</button><button id="exportProject" class="button subtle"><svg><use href="#download"/></svg>导出项目</button><button id="apiSettings" class="avatar api-avatar" type="button" title="API 设置" aria-label="API 设置">API</button></div></header>
+<nav class="workflow"><div class="steps"><button id="sceneTab" class="step active"><span>01</span>搭建空间</button><span class="step-line"></span><button id="renderTab" class="step"><span>02</span>视角与出图</button><span class="step-line"></span><button id="gsTab" class="step"><span>03</span>3DGS</button><span class="step-line"></span><button id="roamTab" class="step"><span>04</span>漫游</button></div><div class="workflow-note"><span class="tiny-dot"></span> 从一个方块，开始一个空间。</div></nav>
+<main id="editor" class="editor">
+<aside class="library panel"><div class="panel-heading"><h2>组件库</h2><span class="eyebrow">COMPONENTS</span></div><div class="library-tabs"><button class="active" data-lib="all">全部</button><button data-lib="structure">结构</button><button data-lib="furniture">组件</button></div><div class="library-grid" id="libraryGrid"></div><div class="section-label">材质颜色 <span id="colorName">奶油白</span></div><div id="swatches" class="swatches"></div><div class="dimension-box"><div class="section-label">基础方块尺寸</div><div class="dimension-fields"><label>X<input id="dimX" type="number" min="1" max="8" value="1"></label><label>Y<input id="dimY" type="number" min="1" max="8" value="1"></label><label>Z<input id="dimZ" type="number" min="1" max="8" value="1"></label></div><p>1 格 = 500 mm · 点击表面堆叠</p></div><div class="window-options" id="windowOptions" hidden><div class="section-label">窗户尺寸 <span>固定宽 1500 mm</span></div><div class="window-fields"><label>窗台<input id="windowSill" type="number" min="0" max="3000" step="50" value="900"> mm</label><label>窗高<input id="windowHeight" type="number" min="500" max="3000" step="50" value="1250"> mm</label></div><p>点击垂直墙面放置，自动吸附墙内并挖洞</p></div><div class="floorplan-box"><div class="section-label">平面图底图 <span>可选</span></div><button id="importPlan" class="upload-button"><svg><use href="#upload"/></svg><strong>导入平面图</strong><span>PNG / JPG · 铺在地面作参照</span></button><input type="file" id="planFile" accept="image/png,image/jpeg" hidden><div id="planControls" hidden><label class="range-label">底图透明度<input type="range" id="planOpacity" min="0" max="100" value="45"></label><button id="removePlan" class="text-button">移除底图</button></div></div><div class="library-bottom"><span class="shortcut">B</span> 放置 <span class="shortcut">V</span> 浏览 <span class="shortcut">E</span> 删除</div></aside>
+<section class="viewport" id="viewport"><canvas id="sceneCanvas" aria-label="可交互的三维体块场景"></canvas><div class="viewport-top"><div><span class="canvas-title">空间画布</span><span class="canvas-meta" id="canvasMode">轴侧总览</span></div><div class="view-switch"><button id="isoView" class="active">轴测</button><button id="frontView">正视</button><button id="topView">俯视</button></div></div><div class="canvas-tools"><button class="tool active" id="toolOrbit" title="浏览 / V"><svg><use href="#move"/></svg></button><button class="tool" id="toolBuild" title="放置方块 / B"><svg><use href="#cube"/></svg></button><button class="tool" id="toolDelete" title="删除对象 / E"><svg><use href="#trash"/></svg></button><span></span><button class="tool" id="undo" title="撤销 Ctrl+Z"><svg><use href="#icon-undo"/></svg></button><button class="tool" id="toggleGrid" title="显示或隐藏网格"><svg><use href="#grid"/></svg></button><button class="tool" id="zoomOut" title="缩小 / -">−</button><button class="tool" id="zoomIn" title="放大 / +">＋</button></div><div id="markers" class="markers"></div><div class="scene-caption"><div class="caption-index">01 / LIVING SPACE</div><h1>让想法，拥有形状。</h1><p>搭建体块，捕捉视角，把空间交给想象。</p></div><div class="canvas-bottom"><span id="canvasHint">中键旋转 · Shift+左键平移 · 滚轮/＋－缩放 · 点击机位出图</span><button id="resetView" class="text-button">⌖ 重置视图</button></div><div class="axis"><span class="axis-y">Y</span><span class="axis-z">Z</span><span class="axis-x">X</span><svg viewBox="0 0 60 50"><path d="M30 28 8 39" stroke="#c8846e"/><path d="m30 28 21 11" stroke="#8c9b75"/><path d="M30 28V4" stroke="#7c96ab"/></svg></div><div id="cameraCapture" class="camera-capture" hidden><div><strong>取景模式</strong><span>中键旋转 · Shift+左键平移 · 滚轮/＋－缩放</span></div><button id="cancelCamera" class="button subtle">取消</button><button id="confirmCamera" class="button primary">保存此视角 <svg><use href="#camera"/></svg></button></div></section>
+<aside class="inspector panel"><div class="panel-heading"><h2>场景概览</h2><span class="eyebrow">SCENE</span></div><div class="scene-info"><div><span>空间类型</span><strong>住宅 · 客厅</strong></div><div><span>场地尺度</span><strong class="site-size"><input id="siteWidth" type="number" min="2" max="30" step="0.5" value="7.0" aria-label="场地宽度（米）"> × <input id="siteDepth" type="number" min="2" max="30" step="0.5" value="6.0" aria-label="场地深度（米）"> m</strong></div><div><span>场景对象</span><strong id="objectCount">—</strong></div></div><div class="section-title"><h2>我的机位 <span id="cameraCount">02</span></h2><svg><use href="#camera"/></svg></div><p class="muted camera-description">保存一个视角，开启一种可能。</p><div id="cameraList" class="camera-list"></div><button id="addCamera" class="add-camera">＋ 添加当前视角</button><div class="tip-card"><svg><use href="#spark"/></svg><strong>从体块到真实空间</strong><p>点击画布中的机位标记，进入出图工作台，为这个视角赋予材质与光影。</p><button id="startRender">开始探索 <svg><use href="#arrow"/></svg></button></div><div class="project-footer"><span class="tiny-dot"></span> 本地工作空间 <span>v0.1</span></div></aside>
+</main>
+<main id="renderPage" class="render-page" hidden><div class="render-heading"><div><button id="backScene" class="text-button">← 返回空间</button><h1 id="renderTitle">01 · 客厅主视角</h1><p>从搭建到表达，让光影填满你的想象。</p></div><div class="render-settings"><span class="demo-badge">示例出图 · 未连接 API</span><select id="cameraSelect" aria-label="切换机位"></select></div></div><div class="render-columns"><section class="render-left"><div class="preview-panel"><div class="card-heading"><h2><span class="dot gray"></span>视角体块预览</h2><button class="text-button" id="adjustCamera">调整机位 ↗</button></div><div class="preview-canvas-wrap"><canvas id="previewCanvas"></canvas><span class="image-label">SCENE INPUT <span id="sceneVersion">V.01</span></span></div><div class="preview-footer"><span>场景几何 · 当前保存机位</span><span>16:10</span></div></div><div class="prompt-panel"><div class="card-heading"><h2><svg><use href="#spark"/></svg>描述你的空间</h2><button class="text-button" id="savePreset">＋ 存为预设</button></div><div class="preset-label">灵感预设 <span>点击应用，可自由编辑</span></div><div id="presets" class="presets"></div><textarea id="prompt" aria-label="Seedream 提示词" spellcheck="false"></textarea><div class="negative-block"><div class="negative-head"><span>负面提示词</span><button id="previewPrompt" class="text-button" type="button">查看最终提示词</button></div><div id="builtinNegative" class="negative-chips"></div><textarea id="negativePrompt" aria-label="额外负面提示词" spellcheck="false" placeholder="可追加：不要吊灯、不要人物、不要地毯花纹…"></textarea></div><details class="builtin-rules"><summary>内置提示词（只读）</summary><pre id="builtinRules"></pre></details><div class="prompt-bottom"><label><input id="keepLayout" type="checkbox" checked> 使用机位参考图 <span class="hint">仅位置/颜色</span></label><label><input id="allowPeople" type="checkbox"> 允许人物</label><span id="charCount"></span></div><div class="generate-controls"><div><label>生成模型</label><strong>Seedream 5.0 Pro <span>⌄</span></strong></div><div><label>输出尺寸</label><select id="resolution"><option>2K · 预览</option><option>1K · 预览</option></select></div><button id="generate" class="button primary"><svg><use href="#spark"/></svg><span>演示生成</span><svg><use href="#arrow"/></svg></button></div><p class="demo-note">本地演示使用预生成示例图，提示词与场景尚未提交至模型。</p></div></section><section class="result-panel"><div class="card-heading"><h2><span class="dot green"></span>效果图预览</h2><div><button id="compare" class="text-button">◫ 对比底图</button><button id="fullscreen" class="icon-button" title="查看大图">⛶</button></div></div><div class="result-image-wrap" id="resultWrap"><img id="resultImage" src="assets/living-room.png" alt="AI 生成的暖木色极简客厅示例"><canvas id="compareCanvas" hidden></canvas><div class="result-badge"><svg><use href="#spark"/></svg> AI 生成示例</div><div id="generating" class="generating" hidden><span class="loader"></span><strong>正在演示出图流程</strong><span>整理场景与风格描述…</span></div></div><div class="result-detail"><div><span class="eyebrow">WARM MINIMALISM</span><h3 id="resultName">暖木与光的对话</h3><p id="resultMeta">预生成示例 · 暖木极简 · 自然日光</p></div><button id="downloadImage" class="button subtle"><svg><use href="#download"/></svg>下载图片</button></div><div class="history-heading"><h3>出图历史 <span id="historyCount">01</span></h3><span>保留每一次灵感</span></div><div id="history" class="history"></div></section></div></main>
+
+<main id="gsPage" class="gs-page" hidden>
+  <div class="gs-heading">
+    <div>
+      <button id="gsBack" class="text-button">← 返回出图</button>
+      <h1>03 · 3DGS 视角</h1>
+      <p>从当前效果图生成可旋转的 3D 高斯场景，调整视角后用火山模型降噪。</p>
+    </div>
+    <div class="gs-heading-meta"><span class="demo-badge" id="gsBadge">SHARP · 3DGS</span><span id="gsSourceMeta"></span></div>
+  </div>
+  <div class="gs-layout">
+    <section class="gs-source-panel">
+      <div class="card-heading"><h2><span class="dot gray"></span>渲染预览图</h2><span class="eyebrow">SOURCE RENDER</span></div>
+      <div class="gs-source-image-wrap"><img id="gsSourceImage" alt="当前渲染效果图"></div>
+      <div class="gs-source-detail"><strong id="gsSourceName">暂无图片</strong><span id="gsSourceDetail"></span></div>
+    </section>
+    <section class="gs-viewer-panel">
+      <div class="gs-viewer-head">
+        <div><h2>3DGS 场景</h2><p id="gsViewerStatus">选择一张渲染图后生成 3DGS。</p></div>
+        <div class="gs-actions"><button id="gsGenerate" class="button primary" type="button">生成 3DGS</button><button id="gsReset" class="button subtle" type="button" disabled>重置视角</button><button id="gsEnterRoam" class="button subtle" type="button" disabled>04 漫游</button></div>
+      </div>
+      <div id="gsStage" class="gs-stage">
+        <div id="gsEmpty" class="gs-empty"><strong>尚未生成 3DGS</strong><span>点击右上角「生成 3DGS」。首次生成会在本机运行 SHARP 推理。</span></div>
+        <div id="gsSpinner" class="gs-spinner" hidden><span class="loader"></span><strong>正在生成 3DGS…</strong><span id="gsProgress">准备 SHARP 推理</span></div>
+      </div>
+      <div class="gs-viewer-foot"><span>拖动旋转 · Shift+左键平移 · 滚轮缩放</span><div class="gs-denoise-actions"><button id="gsDenoise" class="button primary" type="button" disabled>快速降噪 · Flash 1K</button><button id="gsDenoiseFine" class="button subtle" type="button" disabled>精细 · Pro 2K</button></div></div>
+    </section>
+  </div>
+  <section class="gs-compare" id="gsCompare">
+    <div class="gs-compare-heading"><h2>渲染窗口</h2><span>当前 3DGS 视角与降噪结果并排</span></div>
+    <div class="gs-compare-grid">
+      <article class="gs-compare-card">
+        <div class="gs-compare-card-head"><strong>3DGS 当前视角</strong><span id="gsCompareViewMeta">等待 3DGS 加载</span></div>
+        <div class="gs-compare-frame"><img id="gsCompareView" alt="3DGS 当前视角"><div id="gsCompareViewEmpty" class="gs-compare-empty">调整视角后，这里显示当前 3DGS 画面</div></div>
+      </article>
+      <article class="gs-compare-card">
+        <div class="gs-compare-card-head"><strong>降噪渲染</strong><span id="gsCompareRenderMeta">Flash 1K / Pro 2K</span></div>
+        <div class="gs-compare-frame"><img id="gsCompareRender" alt="降噪渲染结果"><div id="gsCompareRenderEmpty" class="gs-compare-empty">点击「降噪渲染」后显示结果</div></div>
+      </article>
+    </div>
+  </section>
+  <section class="gs-history-section">
+    <div class="history-heading"><h3>3DGS 降噪结果 <span id="gsHistoryCount">00</span></h3><span>独立于出图历史</span></div>
+    <div id="gsHistory" class="gs-history"></div>
+  </section>
+
+</main>
+<main id="roamPage" class="roam-page" hidden>
+  <div class="roam-heading">
+    <div><button id="roamBack" class="text-button">← 返回 03 3DGS</button><span class="eyebrow">04 · ROAM VIDEO</span><h1>漫游视频</h1><p>用预设镜头路径穿过当前 3DGS 场景，一键黑箱导出经过 AI 关键帧处理的 1080p MP4；无预览。</p></div>
+    <div class="roam-heading-meta"><span id="roamSourceMeta">等待 3DGS</span><span id="roamStatus" class="gs-roam-status">等待 3DGS 加载</span><button id="roamHelpBtn" class="button subtle" type="button">使用教程</button></div>
+  </div>
+  <section class="roam-stage-panel">
+    <div id="roamStage" class="roam-stage"><img id="roamPoster" class="roam-poster" alt="漫游来源图"><div id="roamEmpty" class="gs-empty"><strong>还没有 3DGS 场景</strong><span>请先在 03 页面生成 3DGS，再进入 04 漫游。</span></div><div id="roamProcessing" class="roam-processing" hidden><span class="loader"></span><strong id="roamProcessingTitle">正在导出 AI 漫游视频</strong><span id="roamProcessingStage">准备录制 3DGS 路径</span><div class="roam-processing-bar"><i id="roamProcessingBar"></i></div></div></div>
+    <div class="roam-stage-foot"><span>黑箱导出 · 后台 AI 关键帧 + 本地平滑 · 1080p 30fps MP4</span><div class="gs-denoise-actions"><button id="roamRecord" class="button primary" type="button" disabled>导出 AI 漫游视频</button></div></div>
+  </section>
+  <section class="roam-controls">
+    <div class="roam-paths" id="roamPaths">
+      <button type="button" class="gs-roam-path active" data-path="dolly"><strong>推进</strong><span>缓慢靠近主体</span></button>
+      <button type="button" class="gs-roam-path" data-path="orbit"><strong>环绕</strong><span>左右环视房间</span></button>
+      <button type="button" class="gs-roam-path" data-path="rise"><strong>抬升</strong><span>从低到高俯瞰</span></button>
+      <button type="button" class="gs-roam-path" data-path="pan"><strong>横移</strong><span>平行移动视角</span></button>
+    </div>
+    <div class="roam-tools">
+      <label>时长<select id="roamDuration"><option value="6000">6 秒</option><option value="8000" selected>8 秒</option><option value="12000">12 秒</option></select></label>
+      <span class="roam-help">选择路径 → 一键导出；后台 AI 关键帧处理 + 本地平滑编码，无预览，不产生逐帧费用。</span>
+    </div>
+    <div class="roam-progress"><span id="roamBar"></span></div>
+  </section>
+</main>
+
+<dialog id="roamHelpDialog" class="roam-help-dialog"><button id="closeRoamHelp" class="close-dialog" aria-label="关闭">×</button><span class="eyebrow">04 · ROAM GUIDE</span><h2>AI 漫游视频使用教程</h2><ol><li>先在 <strong>03 3DGS</strong> 生成并加载 3DGS 场景；04 使用同一个 3DGS 画布。</li><li>在 04 选择推进、环绕、抬升或横移，并选择 6 / 8 / 12 秒。</li><li>点 <strong>导出 AI 漫游视频</strong>。页面不提供预览，后台自动录制路径。</li><li>系统抽取约 1 秒一张关键帧，用 Seedream Flash 1K 去噪修复，再与原始路径做时间平滑。</li><li>完成后自动编码 <strong>1080p 30fps MP4</strong> 并下载，文件名 FORM-AI-ROAM-*.mp4。</li><li>通常需要 3–5 分钟，8 个左右 AI 关键帧；不是逐帧 AI，不按视频帧数计费。</li></ol><div class="roam-help-actions"><button id="roamHelpClose" class="button primary" type="button">知道了</button></div></dialog><div id="toast" class="toast" role="status"></div><dialog id="imageDialog"><button id="closeImage" class="close-dialog" aria-label="关闭">×</button><img src="assets/living-room.png" alt="效果图大图"></dialog><dialog id="nameDialog"><form method="dialog"><h2 id="nameDialogTitle">保存机位</h2><p>为这个视角起一个名字。</p><input id="nameInput" maxlength="28" autocomplete="off" required><div><button value="cancel" class="button subtle" formnovalidate>取消</button><button value="save" class="button primary">保存</button></div></form></dialog><dialog id="apiDialog" class="api-dialog"><button id="closeApi" class="close-dialog" aria-label="关闭">×</button><span class="eyebrow">MODELS &amp; KEYS</span><h2>模型与 API Key</h2><p>这里列出 FORM 当前使用的全部模型，以及它们需要的密钥。Key 只保存在本机，不会上传。</p><div id="apiModelList" class="api-model-list"></div><div id="apiModelDetail" class="api-model-detail"></div><p id="apiKeyState" class="api-key-state">正在读取 API 配置…</p><p id="apiStatus" class="form-agent-note"></p><div class="api-actions"><button id="apiCancel" class="button primary" type="button">关闭</button></div></dialog><dialog id="floorDialog" class="floor-dialog"><button id="closeFloor" class="close-dialog" aria-label="关闭">×</button><h2>地面设置</h2><p>结构 · 地面尺寸、厚度、材质和颜色；也可以让地面 Agent 用文字生成。</p><div class="floor-form"><label>宽度 (m)<input id="floorWidth" type="number" min="2" max="30" step="0.5" value="7.0"></label><label>深度 (m)<input id="floorDepth" type="number" min="2" max="30" step="0.5" value="6.0"></label><label>厚度 (mm)<input id="floorThickness" type="number" min="20" max="1000" step="10" value="140"></label><label>颜色<input id="floorColor" type="color" value="#d5c9b4"></label><label class="floor-material-field">材质<input id="floorMaterial" type="text" maxlength="40" value="暖米石材"></label></div><div class="floor-presets" id="floorPresets"></div><div class="floor-agent"><label for="floorPrompt">Agent 描述</label><textarea id="floorPrompt" maxlength="4000" rows="3" placeholder="例如：浅橡木直纹地板，温暖哑光，厚度 150mm"></textarea><button id="floorGenerate" class="button primary">Agent 生成地面</button><p id="floorAgentStatus" class="form-agent-note"></p></div><div class="floor-actions"><button id="floorCancel" class="button subtle">取消</button><button id="floorApply" class="button primary">应用地面</button></div></dialog><dialog id="promptDialog"><button id="closePrompt" class="close-dialog" aria-label="关闭">×</button><h2>最终提示词</h2><p>内置规则 + 实时场景简报 + 你的描述 + 负面词，实际发送给 Seedream 的内容。</p><p id="promptStats" class="prompt-stats"></p><pre id="finalPromptPreview"></pre></dialog>
+<script src="depth-renderer.js"></script><script src="app.js?v=pan1"></script><script src="physics.js"></script><script src="editor-v2.js?v=pan1"></script><script src="form-bridge.js?v=keys1"></script><script type="importmap">{"imports":{"three":"./assets/3dgs-vendor/three.module.js","three/addons/postprocessing/Pass.js":"./assets/3dgs-vendor/Pass.js"}}</script>
+<script type="module" src="gs-page.js?v=3dgs7"></script>
+<script src="night-ui.js?v=1"></script></body></html>

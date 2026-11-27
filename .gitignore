@@ -1,0 +1,27 @@
+# Local secrets and generated outputs
+.form-secrets.json
+.env
+.env.*
+assets/generated/*
+!assets/generated/.gitkeep
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Local preview artefacts
+FORM-preview.html
+*-preview.png
+# Runtime / large model files (not part of the source repo)
+models/
+*.pt
+assets/3dgs/
+assets/roam/
+output/
+design-backup/
+FORM-preview.html

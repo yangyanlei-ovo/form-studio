@@ -1,0 +1,10 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+const app=fs.readFileSync(__dirname+'/app.js','utf8'),editor=fs.readFileSync(__dirname+'/editor-v2.js','utf8'),depth=fs.readFileSync(__dirname+'/depth-renderer.js','utf8');
+const chunk=(s,a,b)=>s.slice(s.indexOf(a),s.indexOf(b,s.indexOf(a)));
+let result,sandbox={document:{createElement:()=>({getContext:()=>({putImageData:image=>result=image})})}};vm.createContext(sandbox);
+vm.runInContext('let SITE_W=14,SITE_D=12;'+chunk(app,'function shade(c,n)','function components(o)')+chunk(editor,'function rotateVector(','const baseComponents=')+'let boxFaces;'+chunk(editor,'boxFaces=function','// Visible controls')+depth,sandbox);
+let tested=0;for(let yaw=0;yaw<Math.PI*2;yaw+=Math.PI/12)for(let pitch of [-1.4,-.6,0,.6,1.4])for(let zoom of [.5,1,4]){let P=sandbox.projector(800,600,{yaw,pitch,zoom,projection:'ortho'}),b={x:5,y:4,z:0,sx:3,sy:2,sz:4,c:'#ffffff',id:'test'};let faces=vm.runInContext('boxFaces',sandbox)(b,P);assert.ok(faces.length>=1,`face dropped: ${yaw} ${pitch} ${zoom}`);assert.ok(faces.every(f=>f.pts.every(p=>p.every(Number.isFinite))));tested++;}
+let P={eye:[0,0,0],forward:[0,0,1]};let clipped=sandbox.clipNearPlane([[-1,-1,-1],[1,-1,1],[1,1,1],[-1,1,-1]],P);assert.equal(clipped.length,4);assert.ok(clipped.every(p=>p[2]>=.049999));
+const red={c:'#ff0000',pts:[[0,0,10],[20,0,10],[0,20,1]]},blue={c:'#0000ff',pts:[[0,0,5],[20,0,5],[0,20,5]]};let g={createImageData:(w,h)=>({data:new Uint8ClampedArray(w*h*4)}),drawImage:()=>{}};
+sandbox.drawSoftwareDepth(g,[red,blue],{perspective:false},20,20);let forward=Array.from(result.data);sandbox.drawSoftwareDepth(g,[blue,red],{perspective:false},20,20);assert.deepEqual(Array.from(result.data),forward);assert.equal(result.data[(15*20+1)*4],255);assert.equal(result.data[(1*20+1)*4+2],255);
+console.log('PASS '+tested+' orthographic angle/zoom combinations, partial near-plane clipping, depth order independent of draw order, intersecting surfaces retain the nearest pixels.');
